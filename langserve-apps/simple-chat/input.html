@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Send JSON POST Request</title>
+</head>
+<body>
+    <h1>Send a message</h1>
+    <textarea id="message" rows="5" placeholder="Enter your message here..." width="400px"></textarea>
+    <br>
+    <button id="submit-button">Send Message 3</button>
+    <p id="response-message"></p>
+
+    <script>
+        const messageInput = document.getElementById("message");
+        const submitButton = document.getElementById("submit-button");
+        const responseMessage = document.getElementById("response-message");
+
+        submitButton.addEventListener("click", function() {
+            const message = messageInput.value;
+
+            // Prepare JSON data
+            const jsonData = {
+                input: message,
+            };
+
+            // Convert data to JSON string
+            const dataString = JSON.stringify(jsonData);
+
+            // Send POST request with Fetch API
+            fetch("http://localhost:8000/openai/invoke", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: dataString
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Handle successful response
+                responseMessage.textContent = `Response from server: ${data.output.content}`;
+            })
+            .catch(error => {
+                // Handle errors
+                console.error("Error:", error);
+                responseMessage.textContent = "An error occurred. Please try again.";
+            });
+        });
+    </script>
+</body>
+</html>
